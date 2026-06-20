@@ -2,62 +2,97 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>战线编辑系统 v1</title>
+<title>战线GIS平台控制台</title>
 
+<link rel="stylesheet" href="style.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-html,body{margin:0;height:100%;}
-#map{height:100vh;}
-
-#panel{
-position:absolute;
-top:10px;
-left:10px;
-z-index:999;
-background:white;
+html,body{margin:0;height:100%;font-family:sans-serif;}
+#container{display:flex;height:100%;}
+#left{
+width:260px;
+background:#111;
+color:white;
 padding:10px;
-border-radius:8px;
-width:220px;
-font-family:sans-serif;
 }
-
-button{margin:3px;width:100%;}
+#map{flex:1;}
+button{
+width:100%;
+margin:5px 0;
+padding:8px;
+}
+.section{
+margin-top:10px;
+border-top:1px solid #333;
+padding-top:10px;
+}
 </style>
 </head>
 
 <body>
 
-<div id="panel">
+<div id="container">
 
-<b>战线编辑器</b>
+<!-- 左侧控制台 -->
+<div id="left">
 
-<button onclick="enablePoint()">📍 添加点</button>
-<button onclick="enableLine()">➖ 画战线</button>
-<button onclick="enablePoly()">🟥 画区域</button>
+<h3>🧭 战线GIS平台</h3>
 
-<button onclick="exportData()">💾 导出JSON</button>
+<div class="section">
+<b>📍 地图模式</b>
+<button onclick="openModule('timeline')">时间轴战线</button>
+<button onclick="openModule('editor')">战线编辑器</button>
+<button onclick="openModule('ai')">AI生成战线</button>
+<button onclick="openModule('realtime')">实时战线</button>
+</div>
 
-<div id="status">模式：浏览</div>
+<div class="section">
+<b>⚙ 状态</b>
+<div id="status">未加载模块</div>
+</div>
 
 </div>
 
+<!-- 地图 -->
 <div id="map"></div>
 
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.css"/>
+<script src="core/map.js"></script>
+<script src="core/state.js"></script>
 
-<script src="editor.js"></script>
+<script src="modules/timeline.js"></script>
+<script src="modules/editor.js"></script>
+<script src="modules/ai.js"></script>
+<script src="modules/realtime.js"></script>
 
 <script>
 
-let map = L.map('map').setView([48.5,37.8],6);
+initMap();
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// 当前模块
+let currentModule = null;
 
-initEditor(map);
+function openModule(name){
+
+document.getElementById("status").innerText =
+"当前模块：" + name;
+
+if(currentModule && currentModule.stop){
+currentModule.stop();
+}
+
+if(name==="timeline") currentModule = TimelineModule();
+if(name==="editor") currentModule = EditorModule();
+if(name==="ai") currentModule = AIModule();
+if(name==="realtime") currentModule = RealtimeModule();
+
+currentModule.start();
+
+}
 
 </script>
 
