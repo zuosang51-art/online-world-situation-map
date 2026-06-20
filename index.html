@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>战线地图系统 v2（时间轴版）</title>
+<title>战线地图系统 v3（自动时间轴）</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
@@ -19,7 +19,9 @@ background:white;
 padding:10px;
 border-radius:8px;
 box-shadow:0 0 10px rgba(0,0,0,0.2);
+font-family:sans-serif;
 }
+
 button{margin:3px;}
 </style>
 
@@ -28,9 +30,21 @@ button{margin:3px;}
 <body>
 
 <div id="panel">
-<button onclick="setYear('2024')">2024</button>
-<button onclick="setYear('2025')">2025</button>
-<button onclick="setYear('2026')">2026</button>
+
+<div>
+<button onclick="play()">▶ 播放</button>
+<button onclick="pause()">⏸ 暂停</button>
+</div>
+
+<div>
+速度：
+<button onclick="setSpeed(2000)">慢</button>
+<button onclick="setSpeed(1000)">中</button>
+<button onclick="setSpeed(500)">快</button>
+</div>
+
+<div id="yearDisplay">当前：2024</div>
+
 </div>
 
 <div id="map"></div>
@@ -45,31 +59,30 @@ button{margin:3px;}
 //====================
 var map = L.map('map').setView([48.5, 37.8], 6);
 
-var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-var sat = L.tileLayer(
-'https://webrd0.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}'
-);
-
-L.control.layers({
-"OSM": osm,
-"卫星": sat
-}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 //====================
-// 图层容器
+// 图层
 //====================
 var layerGroup = L.layerGroup().addTo(map);
 
-// 当前年份
-var currentYear = "2026";
+//====================
+// 时间控制
+//====================
+var years = ["2024","2025","2026"];
+var index = 0;
+var timer = null;
+var speed = 1000;
 
 //====================
-// 渲染函数（核心）
+// 渲染函数
 //====================
 function render(year){
 
 layerGroup.clearLayers();
+
+document.getElementById("yearDisplay").innerText =
+"当前：" + year;
 
 var d = data[year];
 
@@ -109,15 +122,39 @@ L.marker(p.coords)
 }
 
 //====================
-// 切换年份
+// 播放控制
 //====================
-function setYear(y){
-currentYear = y;
-render(y);
+function play(){
+
+if(timer) return;
+
+timer = setInterval(()=>{
+
+render(years[index]);
+
+index++;
+
+if(index >= years.length){
+index = 0;
 }
 
-// 初始加载
-render(currentYear);
+}, speed);
+
+}
+
+function pause(){
+clearInterval(timer);
+timer = null;
+}
+
+function setSpeed(ms){
+speed = ms;
+pause();
+play();
+}
+
+// 初始
+render(years[0]);
 
 </script>
 
