@@ -2,14 +2,15 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>实时战线系统 v1</title>
+<title>战线编辑系统 v1</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 html,body{margin:0;height:100%;}
 #map{height:100vh;}
-#ui{
+
+#panel{
 position:absolute;
 top:10px;
 left:10px;
@@ -17,32 +18,46 @@ z-index:999;
 background:white;
 padding:10px;
 border-radius:8px;
+width:220px;
 font-family:sans-serif;
 }
-</style>
 
+button{margin:3px;width:100%;}
+</style>
 </head>
 
 <body>
 
-<div id="ui">
-🟢 实时战线系统<br>
-每5秒自动更新
+<div id="panel">
+
+<b>战线编辑器</b>
+
+<button onclick="enablePoint()">📍 添加点</button>
+<button onclick="enableLine()">➖ 画战线</button>
+<button onclick="enablePoly()">🟥 画区域</button>
+
+<button onclick="exportData()">💾 导出JSON</button>
+
+<div id="status">模式：浏览</div>
+
 </div>
 
 <div id="map"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.css"/>
+
+<script src="editor.js"></script>
 
 <script>
 
 let map = L.map('map').setView([48.5,37.8],6);
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png')
-.addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-init(map);
+initEditor(map);
 
 </script>
 
