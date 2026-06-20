@@ -2,17 +2,36 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>战线地图系统</title>
+<title>战线地图系统 v2（时间轴版）</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-html,body{height:100%;margin:0;}
-#map{height:100vh;width:100%;}
+html,body{margin:0;height:100%;}
+#map{height:100vh;}
+
+#panel{
+position:absolute;
+top:10px;
+left:10px;
+z-index:999;
+background:white;
+padding:10px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+button{margin:3px;}
 </style>
+
 </head>
 
 <body>
+
+<div id="panel">
+<button onclick="setYear('2024')">2024</button>
+<button onclick="setYear('2025')">2025</button>
+<button onclick="setYear('2026')">2026</button>
+</div>
 
 <div id="map"></div>
 
@@ -22,84 +41,83 @@ html,body{height:100%;margin:0;}
 <script>
 
 //====================
-// 初始化地图
+// 地图初始化
 //====================
 var map = L.map('map').setView([48.5, 37.8], 6);
 
-//====================
-// 底图
-//====================
 var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 var sat = L.tileLayer(
 'https://webrd0.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}'
 );
 
-//====================
-// 图层控制
-//====================
-var baseMaps = {
-"普通地图": osm,
-"卫星地图": sat
-};
+L.control.layers({
+"OSM": osm,
+"卫星": sat
+}).addTo(map);
 
 //====================
-// 战线图层组
+// 图层容器
 //====================
-var redZone = L.layerGroup().addTo(map);
-var blueZone = L.layerGroup().addTo(map);
-var frontLine = L.layerGroup().addTo(map);
-var points = L.layerGroup().addTo(map);
+var layerGroup = L.layerGroup().addTo(map);
+
+// 当前年份
+var currentYear = "2026";
 
 //====================
-// 添加控制区（红蓝）
+// 渲染函数（核心）
 //====================
-data.redZones.forEach(z => {
-L.polygon(z.coords, {
-color: "red",
-fillColor: "red",
-fillOpacity: 0.3
-}).bindPopup(z.name).addTo(redZone);
+function render(year){
+
+layerGroup.clearLayers();
+
+var d = data[year];
+
+// 红区
+d.redZones.forEach(z=>{
+L.polygon(z.coords,{
+color:"red",
+fillColor:"red",
+fillOpacity:0.3
+}).addTo(layerGroup).bindPopup(z.name);
 });
 
-data.blueZones.forEach(z => {
-L.polygon(z.coords, {
-color: "blue",
-fillColor: "blue",
-fillOpacity: 0.3
-}).bindPopup(z.name).addTo(blueZone);
+// 蓝区
+d.blueZones.forEach(z=>{
+L.polygon(z.coords,{
+color:"blue",
+fillColor:"blue",
+fillOpacity:0.3
+}).addTo(layerGroup).bindPopup(z.name);
 });
 
-//====================
 // 前线
-//====================
-data.frontLines.forEach(line => {
-L.polyline(line.coords, {
-color: "black",
-weight: 3
-}).bindPopup(line.name).addTo(frontLine);
+d.frontLines.forEach(l=>{
+L.polyline(l.coords,{
+color:"black",
+weight:3
+}).addTo(layerGroup).bindPopup(l.name);
 });
 
-//====================
-// 节点
-//====================
-data.points.forEach(p => {
+// 点
+d.points.forEach(p=>{
 L.marker(p.coords)
-.bindPopup(p.name)
-.addTo(points);
+.addTo(layerGroup)
+.bindPopup(p.name);
 });
 
-//====================
-// 图层菜单
-//====================
-var overlays = {
-"红色控制区": redZone,
-"蓝色控制区": blueZone,
-"前线": frontLine,
-"节点": points
-};
+}
 
-L.control.layers(baseMaps, overlays).addTo(map);
+//====================
+// 切换年份
+//====================
+function setYear(y){
+currentYear = y;
+render(y);
+}
+
+// 初始加载
+render(currentYear);
 
 </script>
 
