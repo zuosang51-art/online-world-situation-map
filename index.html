@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>终极战线GIS系统</title>
+<title>实时战线系统 v1</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
@@ -17,6 +17,7 @@ z-index:999;
 background:white;
 padding:10px;
 border-radius:8px;
+font-family:sans-serif;
 }
 </style>
 
@@ -25,37 +26,23 @@ border-radius:8px;
 <body>
 
 <div id="ui">
-<button onclick="play()">播放</button>
-<button onclick="pause()">暂停</button>
+🟢 实时战线系统<br>
+每5秒自动更新
 </div>
 
 <div id="map"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="loader.js"></script>
+<script src="app.js"></script>
 
 <script>
 
 let map = L.map('map').setView([48.5,37.8],6);
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png')
+.addTo(map);
 
 init(map);
-
-// 模拟加载数据
-fetch("data.json")
-.then(r=>r.json())
-.then(d=>{
-loadYear(d["2024"]);
-});
-
-function play(){
-playAnimation();
-}
-
-function pause(){
-clearInterval(animationTimer);
-}
 
 </script>
 
