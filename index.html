@@ -72,6 +72,19 @@ padding-top:10px;
 <script src="render.js"></script>
 
 <script>
+async function runAI(){
+
+let text = document.getElementById("input").value;
+
+document.getElementById("info").innerText = "生成中...";
+
+let result = await askGPT(text);
+
+render(result);
+
+}
+
+</script>
 
 initMap();
 
