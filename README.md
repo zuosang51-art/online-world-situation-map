@@ -1,5 +1,5 @@
 # online-world-situation-map
 my-interactive-map
-│
-├── index.html
-└── style.css
+
+ index.html
+style.css
