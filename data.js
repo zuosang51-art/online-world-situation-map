@@ -1,48 +1,29 @@
-var data = {
-
-"2024":{
-redZones:[
-{name:"红方控制区A（2024）",coords:[[48.2,37.2],[48.5,37.2],[48.5,37.6],[48.2,37.6]]}
-],
-blueZones:[
-{name:"蓝方控制区B（2024）",coords:[[48.5,37.6],[49,37.6],[49,38]]}
-],
-frontLines:[
-{name:"前线A（2024）",coords:[[48.4,37.3],[48.6,37.5]]}
-],
-points:[
-{name:"城市A（2024）",coords:[48.4,37.4]}
-]
-},
-
-"2025":{
-redZones:[
-{name:"红方推进区（2025）",coords:[[48.3,37.2],[48.7,37.8]]}
-],
-blueZones:[
-{name:"蓝方防御区（2025）",coords:[[48.7,37.8],[49.1,38.2]]}
-],
-frontLines:[
-{name:"激烈交战线（2025）",coords:[[48.5,37.4],[48.9,37.9]]}
-],
-points:[
-{name:"战略节点B（2025）",coords:[48.6,37.6]}
-]
-},
-
-"2026":{
-redZones:[
-{name:"红方控制区（2026）",coords:[[48.2,37.1],[48.9,37.9]]}
-],
-blueZones:[
-{name:"蓝方控制区（2026）",coords:[[48.9,38],[49.2,38.4]]}
-],
-frontLines:[
-{name:"当前战线（2026）",coords:[[48.6,37.5],[49,37.9]]}
-],
-points:[
-{name:"核心城市（2026）",coords:[48.7,37.7]}
-]
+{
+  "2024": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "红方控制区A",
+          "side": "red"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [[[37.2,48.2],[37.6,48.2],[37.6,48.5],[37.2,48.5],[37.2,48.2]]]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "前线A",
+          "type": "frontline"
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [[37.3,48.4],[37.5,48.6]]
+        }
+      }
+    ]
+  }
 }
-
-};
