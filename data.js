@@ -1,29 +1,32 @@
 {
-  "2024": {
-    "type": "FeatureCollection",
-    "features": [
+  "timestamp": 1710000000,
+
+  "zones": {
+    "red": [
       {
-        "type": "Feature",
-        "properties": {
-          "name": "红方控制区A",
-          "side": "red"
-        },
-        "geometry": {
-          "type": "Polygon",
-          "coordinates": [[[37.2,48.2],[37.6,48.2],[37.6,48.5],[37.2,48.5],[37.2,48.2]]]
-        }
-      },
+        "name": "红方控制区A",
+        "coords": [[48.2,37.2],[48.6,37.2],[48.6,37.6],[48.2,37.6]]
+      }
+    ],
+    "blue": [
       {
-        "type": "Feature",
-        "properties": {
-          "name": "前线A",
-          "type": "frontline"
-        },
-        "geometry": {
-          "type": "LineString",
-          "coordinates": [[37.3,48.4],[37.5,48.6]]
-        }
+        "name": "蓝方控制区B",
+        "coords": [[48.6,37.6],[49.0,37.6],[49.0,38.0],[48.6,38.0]]
       }
     ]
-  }
+  },
+
+  "frontlines": [
+    {
+      "name": "前线A",
+      "coords": [[48.3,37.4],[48.5,37.6],[48.7,37.8]]
+    }
+  ],
+
+  "points": [
+    {
+      "name": "战略城市A",
+      "coords": [48.5,37.5]
+    }
+  ]
 }
