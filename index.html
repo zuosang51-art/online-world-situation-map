@@ -2,14 +2,13 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>战线态势系统 v4（完整版）</title>
+<title>终极战线GIS系统</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 html,body{margin:0;height:100%;}
 #map{height:100vh;}
-
 #ui{
 position:absolute;
 top:10px;
@@ -17,168 +16,46 @@ left:10px;
 z-index:999;
 background:white;
 padding:10px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
-width:240px;
-font-family:sans-serif;
-}
-
-button{margin:3px;}
-
-#info{
-margin-top:10px;
-font-size:13px;
-border-top:1px solid #ccc;
-padding-top:8px;
+border-radius:8px;
 }
 </style>
+
 </head>
 
 <body>
 
 <div id="ui">
-
-<div>
-<button onclick="play()">▶ 播放</button>
-<button onclick="pause()">⏸</button>
-</div>
-
-<div>
-<button onclick="setYear('2024')">2024</button>
-<button onclick="setYear('2025')">2025</button>
-<button onclick="setYear('2026')">2026</button>
-</div>
-
-<div>
-速度：
-<button onclick="setSpeed(2000)">慢</button>
-<button onclick="setSpeed(1000)">中</button>
-<button onclick="setSpeed(500)">快</button>
-</div>
-
-<div id="yearText">年份：2024</div>
-
-<div id="info">点击地图元素查看信息</div>
-
+<button onclick="play()">播放</button>
+<button onclick="pause()">暂停</button>
 </div>
 
 <div id="map"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="data.js"></script>
+<script src="loader.js"></script>
 
 <script>
 
-//====================
-// 初始化地图
-//====================
-var map = L.map('map').setView([48.5,37.8],6);
+let map = L.map('map').setView([48.5,37.8],6);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-//====================
-// 图层
-//====================
-var layerGroup = L.layerGroup().addTo(map);
+init(map);
 
-//====================
-// 状态
-//====================
-var years = ["2024","2025","2026"];
-var index = 0;
-var timer = null;
-var speed = 1000;
-
-//====================
-// 信息面板
-//====================
-function showInfo(text){
-document.getElementById("info").innerHTML = text;
-}
-
-//====================
-// 渲染核心（升级版）
-//====================
-function render(year){
-
-layerGroup.clearLayers();
-
-document.getElementById("yearText").innerText = "年份：" + year;
-
-var d = data[year];
-
-// 红区
-d.redZones.forEach(z=>{
-L.polygon(z.coords,{
-color:"red",
-fillOpacity:0.3
-}).on("click",()=>showInfo("🟥 "+z.name)).addTo(layerGroup);
+// 模拟加载数据
+fetch("data.json")
+.then(r=>r.json())
+.then(d=>{
+loadYear(d["2024"]);
 });
 
-// 蓝区
-d.blueZones.forEach(z=>{
-L.polygon(z.coords,{
-color:"blue",
-fillOpacity:0.3
-}).on("click",()=>showInfo("🟦 "+z.name)).addTo(layerGroup);
-});
-
-// 前线
-d.frontLines.forEach(l=>{
-L.polyline(l.coords,{
-color:"black",
-weight:3
-}).on("click",()=>showInfo("➖ "+l.name)).addTo(layerGroup);
-});
-
-// 点
-d.points.forEach(p=>{
-L.marker(p.coords)
-.on("click",()=>showInfo("📍 "+p.name))
-.addTo(layerGroup);
-});
-
-}
-
-//====================
-// 播放系统
-//====================
 function play(){
-
-if(timer) return;
-
-timer=setInterval(()=>{
-
-render(years[index]);
-
-index++;
-
-if(index>=years.length){
-index=0;
-}
-
-},speed);
-
+playAnimation();
 }
 
 function pause(){
-clearInterval(timer);
-timer=null;
+clearInterval(animationTimer);
 }
-
-function setYear(y){
-pause();
-render(y);
-}
-
-function setSpeed(ms){
-speed=ms;
-pause();
-play();
-}
-
-// 初始化
-render("2024");
 
 </script>
 
